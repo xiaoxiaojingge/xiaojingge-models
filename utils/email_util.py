@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2023-10-11 10:58
 @Author  : lijing
 @File    : email_util.py
 @Description: 邮件工具类
 ---------------------------------------
-'''
+"""
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
 class EmailServer:
-    def __init__(self, smtp_server, smtp_port, sender_email, sender_password, receiver_email):
+    def __init__(
+        self, smtp_server, smtp_port, sender_email, sender_password, receiver_email
+    ):
         self.smtp_server = smtp_server
         self.smtp_port = smtp_port
         self.sender_email = sender_email
@@ -21,7 +23,7 @@ class EmailServer:
         self.receiver_email = receiver_email
 
     def send_email(self, subject, message):
-        '''
+        """
         发送邮件
         :param sender_email: 发送者邮箱
         :param sender_password: 发送者密码
@@ -29,16 +31,16 @@ class EmailServer:
         :param subject: 主题
         :param message: 邮件消息
         :return: 返回值
-        '''
+        """
 
         # 创建邮件内容和头部
         email = MIMEMultipart()
-        email['From'] = self.sender_email
-        email['To'] = self.receiver_email
-        email['Subject'] = subject
+        email["From"] = self.sender_email
+        email["To"] = self.receiver_email
+        email["Subject"] = subject
 
         # 添加邮件正文
-        email.attach(MIMEText(message, 'html'))
+        email.attach(MIMEText(message, "html"))
 
         # 建立SMTP连接并发送邮件
         with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
@@ -47,12 +49,12 @@ class EmailServer:
             server.send_message(email)
 
     def send_email_2_admin(self, subject, message):
-        '''
+        """
         发送邮箱给管理员
         :param subject: 邮件主题
         :param message: 邮件信息
         :return:
-        '''
+        """
         # 设置邮件主题和内容，发送邮件
         # 发送邮件
         email_template = """

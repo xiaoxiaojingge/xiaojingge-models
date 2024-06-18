@@ -1,14 +1,14 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
 # ! -*- coding: utf-8 -*-
 
-'''
+"""
 ---------------------------------------
 @Time    : 2023-09-18
 @Author  : lijing
 @File    : print_util.py
 @Description: 打印工具类
 ---------------------------------------
-'''
+"""
 
 # 如果你想要输出颜色化的文本，可以使用Python内置的colorama模块
 import colorama
