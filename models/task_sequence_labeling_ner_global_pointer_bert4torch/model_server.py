@@ -11,36 +11,35 @@
 # 配置相关
 import configparser
 
+# json相关
+import json
+
+# 模型相关
 # 系统相关
 import os
+
+# 多线程相关
+from multiprocessing import Queue
 
 # 路径相关
 from pathlib import Path
 
-# json相关
-import json
+import numpy as np
+import torch
+import torch.optim as optim
+from bert4torch.callbacks import Callback
+from bert4torch.layers import GlobalPointer
+from bert4torch.losses import MultilabelCategoricalCrossentropy
+from bert4torch.models import BaseModel, build_transformer_model
+from bert4torch.snippets import ListDataset, seed_everything, sequence_padding
+from bert4torch.tokenizers import Tokenizer
+from torch.utils.data import DataLoader
 
 # 日志相关
 from config.logger import logger
 
 # 邮件相关
 from utils.email_util import EmailServer
-
-# 模型相关
-import os
-import numpy as np
-from bert4torch.models import build_transformer_model, BaseModel
-import torch
-from torch.utils.data import DataLoader
-import torch.optim as optim
-from bert4torch.callbacks import Callback
-from bert4torch.snippets import sequence_padding, ListDataset, seed_everything
-from bert4torch.tokenizers import Tokenizer
-from bert4torch.losses import MultilabelCategoricalCrossentropy
-from bert4torch.layers import GlobalPointer
-
-# 多线程相关
-from multiprocessing import Queue
 
 
 class MyDataset(ListDataset):

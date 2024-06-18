@@ -8,18 +8,20 @@
 ---------------------------------------
 """
 
-# FastAPI 文档推荐使用 Uvicorn 来部署应用(其次是 hypercorn)
-# Uvicorn 是一个基于 asyncio 开发的一个轻量级高效的 Web 服务器框架(仅支持 python 3.5.3 以上版本)
-from api import model_api
-from fastapi import FastAPI
-import uvicorn
 import configparser
 
-# 日志打印类
-from config.logger import logger
+import uvicorn
+from fastapi import FastAPI
 
 # 打印工具类
 import utils.print_util as print_util
+
+# FastAPI 文档推荐使用 Uvicorn 来部署应用(其次是 hypercorn)
+# Uvicorn 是一个基于 asyncio 开发的一个轻量级高效的 Web 服务器框架(仅支持 python 3.5.3 以上版本)
+from api import model_api
+
+# 日志打印类
+from config.logger import logger
 
 app = FastAPI()
 config = configparser.ConfigParser()
