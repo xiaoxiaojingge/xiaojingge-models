@@ -424,18 +424,4 @@ class ModelServer:
 
 
 if __name__ == "__main__":
-    train_dir = "D:/workspace_ai_train/xiaojingge-models/models/task_sequence_labeling_ner_global_pointer_bert4torch/corpus"
-    queue = Queue()
-
-    model_server = ModelServer(train_dir, "predict")
-    # model_server.start_train(queue)
-    model_server.start_predict(
-        [
-            "陈和生是个好人啊",
-            "陈和生是个好人啊",
-            "陈和生是个好人啊",
-            "陈和生是个好人啊",
-        ],
-        queue,
-    )
-    print(queue.get())
+    pass
