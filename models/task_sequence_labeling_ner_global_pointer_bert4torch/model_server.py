@@ -10,17 +10,13 @@
 
 # 配置相关
 import configparser
-
 # json相关
 import json
-
 # 模型相关
 # 系统相关
 import os
-
 # 多线程相关
 from multiprocessing import Queue
-
 # 路径相关
 from pathlib import Path
 
@@ -37,7 +33,6 @@ from torch.utils.data import DataLoader
 
 # 日志相关
 from config.logger import logger
-
 # 邮件相关
 from utils.email_util import EmailServer
 
@@ -188,7 +183,7 @@ class ModelServer:
         # 建立分词器
         self.tokenizer = Tokenizer(self.bert_dict_path, do_lower_case=True)
 
-        categories_label2id = self.get_entity_dict(model_dir + "/train.bio")
+        categories_label2id = self.get_entity_dict(model_dir + "/train/train.ner")
         categories_id2label = dict(
             (value, key) for key, value in categories_label2id.items()
         )
@@ -223,14 +218,14 @@ class ModelServer:
         # 训练集
         if sign == "train":
             self.train_dataloader = DataLoader(
-                MyDataset(model_dir + "/train.bio"),
+                MyDataset(model_dir + "/train/train.ner"),
                 batch_size=self.batch_size,
                 shuffle=True,
                 collate_fn=self.collate_fn,
             )
             # 验证集
             self.valid_dataloader = DataLoader(
-                MyDataset(model_dir + "/valid.bio"),
+                MyDataset(model_dir + "/train/valid.ner"),
                 batch_size=self.batch_size,
                 collate_fn=self.collate_fn,
             )

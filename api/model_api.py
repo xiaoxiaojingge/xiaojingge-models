@@ -10,17 +10,17 @@
 
 # web api 框架
 # from fastapi import FastAPI
-import json
 
 from fastapi import APIRouter, File, Form, UploadFile
 
+# 业务操作
+# 命名实体识别业务
+import service.task_relation_extraction_gplinker_bert4torch.model_service as re_service
+
 # 日志打印类
-from config.logger import logger
 
 # 模型类型常量
-from constants import model_constants
 
-# 业务操作
 # TODO
 
 # 路由实例
@@ -29,5 +29,5 @@ router = APIRouter()
 
 @router.post("/test")
 async def test(param: str = Form(...), file: UploadFile = File(...)):
-    result = {"code": 200, "message": "success", "data": {}}
+    result = await re_service.train_model(model_id=2, train_file=file)
     return result

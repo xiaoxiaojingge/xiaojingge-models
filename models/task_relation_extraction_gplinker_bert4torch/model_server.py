@@ -245,7 +245,7 @@ class ModelServer:
 
         predicate2id, id2predicate = {}, {}
 
-        with open(model_dir + "/all_schemas", encoding="utf-8") as f:
+        with open(model_dir + "/train/all_schemas", encoding="utf-8") as f:
             for l in f:
                 l = json.loads(l)
                 if l["predicate"] not in predicate2id:
@@ -255,14 +255,14 @@ class ModelServer:
         self.id2predicate = id2predicate
 
         if sign == "train":
-            self.train_dataset = MyDataset(self.model_dir + "/train.json")
+            self.train_dataset = MyDataset(self.model_dir + "/train/train.re")
             self.train_dataloader = DataLoader(
                 self.train_dataset,
                 batch_size=self.batch_size,
                 shuffle=True,
                 collate_fn=self.collate_fn,
             )
-            self.valid_dataset = MyDataset(self.model_dir + "/valid.json")
+            self.valid_dataset = MyDataset(self.model_dir + "/train/valid.re")
             self.valid_dataloader = DataLoader(
                 self.valid_dataset,
                 batch_size=self.batch_size,
@@ -457,7 +457,7 @@ class ModelServer:
                 f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
             )
             self.model.fit(
-                model_server.train_dataloader,
+                self.train_dataloader,
                 steps_per_epoch=None,
                 epochs=self.epochs,
                 callbacks=[evaluator],
@@ -546,23 +546,4 @@ class ModelServer:
 
 
 if __name__ == "__main__":
-    train_dir = "D:/workspace_ai_train/re/35"
-    queue = Queue()
-
-    model_server = ModelServer(train_dir, "train")
-    model_server.start_train(queue)
-    # model_server.start_predict(
-    #     [
-    #         '明确拍摄要求，提炼产品卖点，了解拍摄项目的内涵深入了解产品特征，挖掘拍摄项目亮点，通过画面有效表达',
-    #         '设计拍摄思路与拍摄方法，创意各种风格和拍摄主题，对所有拍摄的内容及结果有准确预判，引导运营、设计师提升视觉效果',
-    #         '产品拍摄，场景设计，与设计师配合，为后期制作提出优化调整方案',
-    #         '1年以上摄影工作经验，热爱摄影，时尚触觉敏锐，能做到精益求精',
-    #         '具备专业过硬的摄影技术，有创作基础，对色彩、构图、镜头语言有清晰认识',
-    #         '具备较强的时尚感和色彩感，对摄影布光、道具摆设造型有独特的创意，擅长营造良好的产品氛围',
-    #         '有较强的美术功底, 对色彩感觉强烈，视觉表达方面有个人独特观点',
-    #         '具备商业摄影 / 电商摄影 / 广告公司 / 工作室行业经验',
-    #         '这是一段测试文本，本岗位要求学历为本科，最好是物流管理专业，拥有新媒体运营职业技能等级证书(初级)证书，最好，会使用Office办公软件和数据分析工具Google Analytics，会使用uniapp,拥有英文四级证书最佳',
-    #
-    #     ],
-    #     queue)
-    print(queue.get())
+    pass
