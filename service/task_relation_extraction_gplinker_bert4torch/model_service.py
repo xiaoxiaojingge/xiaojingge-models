@@ -10,45 +10,38 @@
 
 # 配置相关
 import configparser
-
 # 日期相关
 import datetime
-
 # json
 import json
-
 # 系统相关
 import os
-
 # 随机处理
 import random
-
 # 文件操作
 import shutil
-
 # 多线程相关
 import threading
-
 # 多进程相关
-from multiprocessing import Event, Process, Queue
+from multiprocessing import Queue
 
+# 错误信息美化
+import pretty_errors
 # fastapi相关
 from fastapi import File, UploadFile
-
 # 深度学习工具sklearn
 from sklearn.model_selection import train_test_split
 
 # 日志服务
-from config.logger import logger
-
-# 错误信息美化
-import pretty_errors
-
+from config.logger import Logger
 # 实体关系抽取模型服务
-from models.task_relation_extraction_gplinker_bert4torch.model_server import ModelServer
+from models.task_relation_extraction_gplinker_bert4torch.model_server import \
+    ModelServer
 
 # 配置对象
 config = configparser.ConfigParser()
+# 日志对象
+logger = Logger().get_logger
 
 
 def split_train_data(

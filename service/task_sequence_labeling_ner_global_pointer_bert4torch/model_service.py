@@ -21,13 +21,15 @@ import shutil
 from fastapi import File, UploadFile
 
 # 日志服务
-from config.logger import logger
+from config.logger import Logger
 # 命名实体识别模型服务
 from models.task_sequence_labeling_ner_global_pointer_bert4torch.model_server import \
     ModelServer
 
 # 配置对象
 config = configparser.ConfigParser()
+# 日志对象
+logger = Logger().get_logger
 
 
 async def train_model(model_id: int, train_file: UploadFile = File(...)):

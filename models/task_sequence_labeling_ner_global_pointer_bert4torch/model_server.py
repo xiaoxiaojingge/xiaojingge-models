@@ -32,9 +32,11 @@ from bert4torch.tokenizers import Tokenizer
 from torch.utils.data import DataLoader
 
 # 日志相关
-from config.logger import logger
+from config.logger import Logger
 # 邮件相关
 from utils.email_util import EmailServer
+
+logger = Logger().get_logger
 
 
 class MyDataset(ListDataset):
