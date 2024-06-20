@@ -12,6 +12,8 @@
 import configparser
 # 日期相关
 import datetime
+# io
+import io
 # json
 import json
 # 系统相关
@@ -34,9 +36,13 @@ from sklearn.model_selection import train_test_split
 
 # 日志服务
 from config.logger import Logger
+# 自定义异常
+from exception.CustomException import BizException
 # 实体关系抽取模型服务
 from models.task_relation_extraction_gplinker_bert4torch.model_server import \
     ModelServer
+# 公共工具类
+from utils import common_util
 
 # 配置对象
 config = configparser.ConfigParser()
@@ -126,24 +132,18 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
     :param train_file: 模型训练语料
     :return:
     """
-    # 校验输入的模型输入文件是否是bio文件
-    if not train_file.filename.endswith(".re"):
-        return {
-            "code": 400,
-            "msg": "模型训练语料文件格式错误，请上传.re格式文件",
-            "data": {},
-        }
-    train_data = await train_file.read()
-
-    if len(train_data) == 0:
-        return {
-            "code": 400,
-            "msg": "模型训练语料文件为空，请上传非空文件",
-            "data": {},
-        }
-    # 模型的语料数量
-    train_data_count = 0
     try:
+        if not train_file.filename.endswith(".re"):
+            logger.error("模型训练语料文件格式错误，请上传.re格式文件")
+            raise BizException("模型训练语料文件格式错误，请上传.re格式文件")
+        train_data = await train_file.read()
+
+        if len(train_data) == 0:
+            logger.error("模型训练语料文件为空，请上传非空文件")
+            raise BizException("模型训练语料文件为空，请上传非空文件")
+        # 模型的语料数量
+        train_data_count = common_util.count_lines(train_data)
+        logger.info(f"本次模型训练语料数量为 {train_data_count} ......")
         # 读取.ini文件
         config.read("config/config.ini")
         train_data_dir = config.get("model_train", "model_train_dir")
@@ -214,6 +214,56 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
         result = {
             "code": 500,
             "msg": f"模型训练异常，异常信息为：{e}",
+            "data": {},
+        }
+        return result
+
+
+async def predict(model_id: int, predict_file: UploadFile = File(...)):
+    """
+    模型推理
+    :param model_id: 需要使用的模型id，用户寻址本地的模型文件
+    :param predict_file: 预测数据文件
+    :return:
+    """
+    try:
+
+        # 读取预测文件数据
+        predict_data = await predict_file.read()
+        # 将file_data转为类文件，可以像文件一样操作
+        zip_file = io.BytesIO(predict_data)
+        # 需要预测的内容，一行一句话
+        predict_contents = common_util.extract_txt_from_zip(zip_file)
+        if len(predict_contents) == 0:
+            raise BizException(
+                "传入的待预测的文本数量为0，请检查输入数据是否符合要求！"
+            )
+        # 读取.ini文件
+        config.read("config/config.ini")
+        # 获取模型路径
+        # 读取.ini文件
+        config.read("config/config.ini")
+        train_data_dir = config.get("model_train", "model_train_dir")
+        # 模型训练路径
+        # re模型结果队列
+        re_result_queue = Queue()
+        # re模型任务
+        model_server = ModelServer(f"{train_data_dir}/re/{str(model_id)}", "predict")
+        re_thread = threading.Thread(
+            target=model_server.start_predict, args=(predict_contents, re_result_queue)
+        )
+        # 开启re模型任务，等待调度
+        re_thread.start()
+        # re模型的预测结果
+        re_model_predict_result = re_result_queue.get()
+        # 主进程等待re模型任务执行完成
+        re_thread.join()
+        return re_model_predict_result
+    except Exception as e:
+        logger.error(f"模型推理异常，异常信息为：{e}")
+        result = {
+            "code": 500,
+            "msg": f"模型推理异常，异常信息为：{e}",
             "data": {},
         }
         return result

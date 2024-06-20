@@ -169,7 +169,7 @@ class ModelServer:
         self.bert_config_path = (
             bert_model_path + "/chinese_L-12_H-768_A-12/bert4torch_config.json"
         )
-        # 表示 BERT 模型的检查点位置。检查点文件通常是训练过程中保存的模型参数的二进制文件。通过加载这个文件，可以恢复训练过程中的模型参数，或者用于对未知数据进行预测。
+        # 表示 BERT 模型的检查点位置。检查点文件通常是训练过程中保存的模型参数的二进制文件。通过加载这个文件，可以恢复训练过程中的模型参数，或者用于对未知数据进行推理。
         self.bert_checkpoint_path = (
             bert_model_path + "/chinese_L-12_H-768_A-12/pytorch_model.bin"
         )
@@ -383,43 +383,43 @@ class ModelServer:
 
     def start_predict(self, predict_contents, result_queue: Queue):
         """
-        模型预测
-        :param predict_contents: 预测的内容列表
+        模型推理
+        :param predict_contents: 推理的内容列表
         :param result_queue: 结果队列，用于进程之间获取结果通信
         :return:
         """
 
-        # 模型预测走CPU
+        # 模型推理走CPU
         os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
         try:
             self.model.load_weights(self.model_dir + "/models/best_model.weights")
 
             results = []
             for content in predict_contents:
-                # 这里是预测内容集合
+                # 这里是推理内容集合
                 predict_result = self.inference(content)
                 results.append(predict_result)
             result = {
                 "sign": "predict",
                 "code": 200,
-                "message": "命名实体识别模型预测成功",
+                "message": "命名实体识别模型推理成功",
                 "data": results,
             }
-            logger.info("命名实体识别模型预测完成！！！")
+            logger.info("命名实体识别模型推理完成！！！")
             result_queue.put(result)
         except Exception as e:
             self.email_server.send_email_2_admin(
-                "命名实体识别模型预测过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】预测过程中出现异常！ -> {}".format(
+                "命名实体识别模型推理过程中出现异常",
+                "【task_relation_extraction_gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
                     e
                 ),
             )
-            logger.error("命名实体识别模型预测过程中出现异常！ -> {}".format(e))
+            logger.error("命名实体识别模型推理过程中出现异常！ -> {}".format(e))
             # # 指定错误标志
             result = {
                 "sign": "predict",
                 "code": 500,
-                "message": "命名实体识别模型预测过程中出现异常！ -> {}".format(e),
+                "message": "命名实体识别模型推理过程中出现异常！ -> {}".format(e),
                 "data": {},
             }
             result_queue.put(result)
