@@ -7,10 +7,12 @@
 @Description: 自定义异常
 ---------------------------------------
 """
+
+
 class BizException(Exception):
-    '''
+    """
     自定义业务异常
-    '''
+    """
 
     def __init__(self, message):
         self.message = message

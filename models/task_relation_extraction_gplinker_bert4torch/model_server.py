@@ -10,13 +10,17 @@
 """
 
 # 配置相关
-import configparser
+from config.config import Config
+
 # json相关
 import json
+
 # 系统相关
 import os
+
 # 多线程相关
 from multiprocessing import Queue
+
 # 路径相关
 from pathlib import Path
 
@@ -24,6 +28,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 from bert4torch.callbacks import Callback
+
 # 模型相关
 from bert4torch.layers import GlobalPointer
 from bert4torch.losses import SparseMultilabelCategoricalCrossentropy
@@ -35,10 +40,12 @@ from tqdm import tqdm
 
 # 日志相关
 from config.logger import Logger
+
 # 邮件相关
 from utils.email_util import EmailServer
 
 logger = Logger().get_logger
+
 
 class MyDataset(ListDataset):
     """
@@ -192,7 +199,7 @@ class ModelServer:
     """
 
     def __init__(self, model_dir: str, sign: str):
-        config = configparser.ConfigParser()
+        config = Config().get_project_config
         # 读取.ini文件，这里的文件使用相对路径拼接
         config.read(
             str(Path(__file__).resolve().parent.parent.parent) + "\config\config.ini"

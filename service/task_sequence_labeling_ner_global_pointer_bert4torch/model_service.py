@@ -9,11 +9,14 @@
 """
 
 # 配置相关
-import configparser
+from config.config import Config
+
 # 日期相关
 import datetime
+
 # 系统相关
 import os
+
 # 文件操作
 import shutil
 
@@ -22,12 +25,14 @@ from fastapi import File, UploadFile
 
 # 日志服务
 from config.logger import Logger
+
 # 命名实体识别模型服务
-from models.task_sequence_labeling_ner_global_pointer_bert4torch.model_server import \
-    ModelServer
+from models.task_sequence_labeling_ner_global_pointer_bert4torch.model_server import (
+    ModelServer,
+)
 
 # 配置对象
-config = configparser.ConfigParser()
+config = Config().get_project_config
 # 日志对象
 logger = Logger().get_logger
 

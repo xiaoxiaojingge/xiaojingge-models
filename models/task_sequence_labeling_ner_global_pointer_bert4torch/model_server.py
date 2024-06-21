@@ -9,14 +9,18 @@
 """
 
 # 配置相关
-import configparser
+from config.config import Config
+
 # json相关
 import json
+
 # 模型相关
 # 系统相关
 import os
+
 # 多线程相关
 from multiprocessing import Queue
+
 # 路径相关
 from pathlib import Path
 
@@ -33,6 +37,7 @@ from torch.utils.data import DataLoader
 
 # 日志相关
 from config.logger import Logger
+
 # 邮件相关
 from utils.email_util import EmailServer
 
@@ -135,7 +140,7 @@ class ModelServer:
     """
 
     def __init__(self, model_dir: str, sign: str):
-        config = configparser.ConfigParser()
+        config = Config().get_project_config
         # 读取.ini文件，这里的文件使用相对路径拼接
         config.read(
             str(Path(__file__).resolve().parent.parent.parent) + "\config\config.ini"
