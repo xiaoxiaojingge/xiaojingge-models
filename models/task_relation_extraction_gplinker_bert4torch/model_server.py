@@ -54,7 +54,8 @@ class MyDataset(ListDataset):
 
     @staticmethod
     def load_data(filename):
-        """加载数据
+        """
+        加载数据
         单条格式：{'text': text, 'spo_list': [(s, p, o)]}
         """
         D = []
@@ -124,7 +125,9 @@ class MyLoss(SparseMultilabelCategoricalCrossentropy):
         super().__init__(**kwargs)
 
     def forward(self, y_preds, y_trues):
-        """y_preds: [Tensor], shape为[btz, heads, seq_len ,seq_len]"""
+        """
+        y_preds: [Tensor], shape为[btz, heads, seq_len ,seq_len]
+        """
         loss_list = []
         for y_pred, y_true in zip(y_preds, y_trues):
             shape = y_pred.shape
@@ -147,7 +150,8 @@ class MyLoss(SparseMultilabelCategoricalCrossentropy):
 
 
 class SPO(dict):
-    """用来存三元组的类
+    """
+    用来存三元组的类
     表现跟tuple基本一致，只是重写了 __hash__ 和 __eq__ 方法，
     使得在判断两个三元组是否等价时容错性更好。
     """
@@ -168,7 +172,9 @@ class SPO(dict):
 
 
 class Evaluator(Callback):
-    """评估与保存"""
+    """
+    评估与保存
+    """
 
     def __init__(self, model_server):
         self.best_val_f1 = 0.0
@@ -296,7 +302,8 @@ class ModelServer:
 
     def collate_fn(self, batch):
         def search(pattern, sequence):
-            """从sequence中寻找子串pattern
+            """
+            从sequence中寻找子串pattern
             如果找到，返回第一个下标；否则返回-1。
             """
             n = len(pattern)
@@ -380,7 +387,9 @@ class ModelServer:
         ]
 
     def extract_spoes(self, text, threshold=0):
-        """抽取输入text所包含的三元组"""
+        """
+        抽取输入text所包含的三元组
+        """
         tokens = self.tokenizer.tokenize(text, maxlen=self.max_len)
         mapping = self.tokenizer.rematch(text, tokens)
         token_ids, segment_ids = self.tokenizer.encode(text, maxlen=self.max_len)
@@ -415,7 +424,9 @@ class ModelServer:
         return list(spoes)
 
     def evaluate(self, data):
-        """评估函数，计算f1、precision、recall"""
+        """
+        评估函数，计算f1、precision、recall
+        """
         global f1, precision, recall
         X, Y, Z = 0, 1e-10, 1e-10
         f = open(self.model_dir + "/dev_pred.json", "w", encoding="utf-8")

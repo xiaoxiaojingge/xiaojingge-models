@@ -8,20 +8,10 @@
 ---------------------------------------
 """
 
-# web api 框架
-# from fastapi import FastAPI
-
 from fastapi import APIRouter, File, Form, UploadFile
 
 # 业务操作
-# 命名实体识别业务
 import service.task_relation_extraction_gplinker_bert4torch.model_service as re_service
-
-# 日志打印类
-
-# 模型类型常量
-
-# TODO
 
 # 路由实例
 router = APIRouter()

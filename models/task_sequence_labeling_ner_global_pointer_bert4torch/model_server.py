@@ -108,7 +108,9 @@ class MyLoss(MultilabelCategoricalCrossentropy):
 
 
 class Evaluator(Callback):
-    """评估与保存"""
+    """
+    评估与保存
+    """
 
     def __init__(self, model_server):
         self.best_val_f1 = 0.0
