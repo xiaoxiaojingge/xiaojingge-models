@@ -375,7 +375,7 @@ class ModelServer:
             logger.error(
                 "命名实体识别模型训练过程中出现异常，停止训练！ -> {}".format(e)
             )
-            # # 指定错误标志
+            # 指定错误标志
             result = {
                 "sign": "train",
                 "code": 500,
@@ -422,7 +422,7 @@ class ModelServer:
                 ),
             )
             logger.error("命名实体识别模型推理过程中出现异常！ -> {}".format(e))
-            # # 指定错误标志
+            # 指定错误标志
             result = {
                 "sign": "predict",
                 "code": 500,
