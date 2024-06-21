@@ -30,5 +30,4 @@ router = APIRouter()
 @router.post("/test")
 async def test(param: str = Form(...), file: UploadFile = File(...)):
     result = await re_service.predict(model_id=2, predict_file=file)
-
     return result

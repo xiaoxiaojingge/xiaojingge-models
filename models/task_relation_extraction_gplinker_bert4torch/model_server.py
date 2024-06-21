@@ -504,6 +504,120 @@ class ModelServer:
         finally:
             pass
 
+    def start_train_thread_pool_executor(self):
+        """
+        模型训练，使用concurrent.futures库，完成多线程任务
+        :param result_queue:
+        :return:
+        """
+        try:
+            evaluator = Evaluator(self)
+            logger.info(
+                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
+            )
+            self.model.fit(
+                self.train_dataloader,
+                steps_per_epoch=None,
+                epochs=self.epochs,
+                callbacks=[evaluator],
+            )
+            logger.info("实体关系抽取模型训练完成！！！")
+            logger.info("*" * 20)
+            logger.info(f"final_f1 -> {final_f1}")
+            logger.info(f"final_precision -> {final_precision}")
+            logger.info(f"final_recall -> {final_recall}")
+            logger.info("*" * 20)
+            result = {
+                "sign": "train",
+                "code": 200,
+                "message": "实体关系抽取模型训练成功",
+                "data": {
+                    "precision": final_precision,
+                    "recall": final_recall,
+                    "f1": final_f1,
+                },
+            }
+            return result
+        except Exception as e:
+            self.email_server.send_email_2_admin(
+                "实体关系抽取模型训练过程中出现异常",
+                "【task_relation_extraction_gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                    e
+                ),
+            )
+            logger.error(
+                "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(e)
+            )
+            # # 指定错误标志
+            result = {
+                "sign": "train",
+                "code": 500,
+                "message": "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(
+                    e
+                ),
+                "data": {},
+            }
+            return result
+        finally:
+            pass
+
+    def start_train_callback(self, callback=None):
+        """
+        模型训练，使用回调函数
+        :param callback:
+        :return:
+        """
+        try:
+            evaluator = Evaluator(self)
+            logger.info(
+                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
+            )
+            self.model.fit(
+                self.train_dataloader,
+                steps_per_epoch=None,
+                epochs=self.epochs,
+                callbacks=[evaluator],
+            )
+            logger.info("实体关系抽取模型训练完成！！！")
+            logger.info("*" * 20)
+            logger.info(f"final_f1 -> {final_f1}")
+            logger.info(f"final_precision -> {final_precision}")
+            logger.info(f"final_recall -> {final_recall}")
+            logger.info("*" * 20)
+            result = {
+                "sign": "train",
+                "code": 200,
+                "message": "实体关系抽取模型训练成功",
+                "data": {
+                    "precision": final_precision,
+                    "recall": final_recall,
+                    "f1": final_f1,
+                },
+            }
+            callback(result)
+        except Exception as e:
+            self.email_server.send_email_2_admin(
+                "实体关系抽取模型训练过程中出现异常",
+                "【task_relation_extraction_gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                    e
+                ),
+            )
+            logger.error(
+                "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(e)
+            )
+            # # 指定错误标志
+            result = {
+                "sign": "train",
+                "code": 500,
+                "message": "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(
+                    e
+                ),
+                "data": {},
+            }
+            callback(result)
+        finally:
+            pass
+
     def start_predict(self, predict_contents, result_queue: Queue):
         """
         模型推理

@@ -39,7 +39,7 @@ import threading
 from multiprocessing import Queue
 
 # 错误信息美化
-import pretty_errors
+# import pretty_errors
 
 # fastapi相关
 from fastapi import File, UploadFile
@@ -58,6 +58,9 @@ from models.task_relation_extraction_gplinker_bert4torch.model_server import Mod
 
 # 公共工具类
 from utils import common_util
+
+# 多线程相关
+import concurrent.futures
 
 # 配置对象
 config = Config().get_project_config
@@ -212,6 +215,7 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
             f"{model_train_dir}/all.re", f"{model_train_dir}/all_schemas"
         )
 
+        # 使用Thread
         # 保存结果的队列
         result_queue = Queue()
         # 定义一个进程，传入参数和队列
@@ -223,7 +227,14 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
         train_model_result = result_queue.get()
         # 等待进程获取结果
         t.join()
+
+        # 使用concurrent.futures.ThreadPoolExecutor
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        #     future = executor.submit(model_server.start_train_thread_pool_executor)
+        #     train_model_result = future.result()
+
         return train_model_result
+
     except Exception as e:
         logger.error(f"模型训练异常，异常信息为：{e}")
         result = {
