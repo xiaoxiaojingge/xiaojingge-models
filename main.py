@@ -24,6 +24,9 @@ from api import model_api
 # 日志打印类
 from config.logger import Logger
 
+# 数据库相关
+import db
+
 app = FastAPI()
 config = Config().get_project_config
 logger = Logger().get_logger
