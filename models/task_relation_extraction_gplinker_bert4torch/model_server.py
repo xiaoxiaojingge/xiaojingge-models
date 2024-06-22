@@ -513,7 +513,17 @@ class ModelServer:
             }
             result_queue.put(result)
         finally:
-            pass
+            # 清除未使用的 GPU 缓存
+            torch.cuda.empty_cache()
+
+            # 释放单个 GPU 设备
+            torch.cuda.empty_cache()
+
+            import gc
+            del self.model
+            del self.train_dataloader
+            del self.tokenizer
+            gc.collect()
 
     def start_train_thread_pool_executor(self):
         """

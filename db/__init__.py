@@ -62,16 +62,16 @@ def get_engine(echo: bool = False) -> Engine:
     )
 
     # 在SQLAlchemy中使用事件系统来记录SQL语句
-    @event.listens_for(engine_info, "before_cursor_execute")
-    def before_cursor_execute(conn, cursor, statement, parameters, context, executor):
-        # 在执行SQL之前记录
-        logger.info(f"SQL Statement: {statement}")
-        logger.info(f"Parameters: {parameters}")
-
-    @event.listens_for(engine_info, "after_cursor_execute")
-    def after_cursor_execute(conn, cursor, statement, parameters, context, executor):
-        # 在执行SQL之后记录
-        logger.info(f"SQL Result: {cursor.rowcount}")
+    # @event.listens_for(engine_info, "before_cursor_execute")
+    # def before_cursor_execute(conn, cursor, statement, parameters, context, executor):
+    #     # 在执行SQL之前记录
+    #     logger.info(f"SQL Statement: {statement}")
+    #     logger.info(f"Parameters: {parameters}")
+    #
+    # @event.listens_for(engine_info, "after_cursor_execute")
+    # def after_cursor_execute(conn, cursor, statement, parameters, context, executor):
+    #     # 在执行SQL之后记录
+    #     logger.info(f"SQL Result: {cursor.rowcount}")
 
     return engine_info
 

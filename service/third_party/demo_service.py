@@ -41,6 +41,8 @@ import datetime
 # 多线程相关
 import threading
 
+from multiprocessing import Process
+
 config = Config().get_project_config
 logger = Logger().get_logger
 
@@ -92,12 +94,20 @@ def train_model_re(
             .first()
         )
 
+        # 工作路径相关
+        train_data_dir = config.get("model_train", "model_train_dir")
+        workspace = f"{train_data_dir}/{user_account}/{datetime.datetime.now().strftime('%Y-%m-%d')}/{model_id}"
+
         # 如果服务器资源被占用
         if sys_model_info.model_value == "True":
             model_train = ModelTrainEntity(
                 model_id=model_id,
                 user_account=user_account,
+                workspace=workspace,
                 train_data_path=train_data_path,
+                module=re_service.__name__,
+                remote_module=__name__,
+                if_delete=False,
             )
             # 保存训练记录到数据库
             session.add(model_train)
@@ -107,11 +117,42 @@ def train_model_re(
                 "message": "模型训练任务提交成功，请稍后查看模型训练状态！",
                 "data": {},
             }
+        # 获取当前版本号
+        current_version = sys_model_info.version
+        try:
+            # 修改 sys_model_info 的值并更新版本号
+            # 使用 where 子句确保版本号未变
+            update_stmt = (
+                ModelInfoEntity.__table__.update()
+                .where(ModelInfoEntity.id == sys_model_info.id)
+                .where(ModelInfoEntity.version == current_version)
+                .values(model_value="True", version=current_version + 1)
+            )
+            result = session.execute(update_stmt)
+            if result.rowcount == 0:
+                raise BizException("数据已被其他事务修改！")
+
+            session.commit()
+        except Exception as e:
+            logger.warning(f"检测到并发修改，任务放弃或重试: {e}")
+            session.rollback()
+            return {
+                "code": 200,
+                "message": "模型训练任务提交成功，请稍后查看模型训练状态！",
+                "data": {},
+            }
 
         # 异步训练
         thread = threading.Thread(
             target=train_model_logic,
-            args=(model_id, sys_model_info, train_data_path, user_account, session),
+            args=(
+                model_id,
+                sys_model_info,
+                workspace,
+                train_data_path,
+                user_account,
+                session,
+            ),
         )
         thread.start()
         return {
@@ -124,43 +165,52 @@ def train_model_re(
         session.rollback()
 
 
-def train_model_logic(model_id, sys_model_info, train_data_path, user_account, session):
+def train_model_logic(
+    model_id, sys_model_info, workspace, train_data_path, user_account, session
+):
     """
     模型训练逻辑
     :param model_id: 模型id
     :param sys_model_info: 模型训练状态实体
+    :param workspace: 工作空间
     :param train_data_path: 训练语料路径
     :param user_account: 用户名
     :param session:
     :return:
     """
-    # 模型训练中
-    sys_model_info.model_value = "True"
-    session.merge(sys_model_info)
-    session.commit()
-    model_train = ModelTrainEntity(
-        model_id=model_id,
-        user_account=user_account,
-        train_data_path=train_data_path,
-    )
-    # 保存训练记录到数据库
-    session.add(model_train)
-    session.commit()
-    # 开始训练
-    train_data_dir = config.get("model_train", "model_train_dir")
-    workspace = f"{train_data_dir}/{user_account}/{datetime.datetime.now().strftime('%Y-%m-%d')}/{model_id}"
-    result = re_service.train_model(workspace, train_data_path)
-    if result["code"] == 500:
-        raise BizException(result["message"])
-    # 完成后，删除训练记录
-    session.delete(model_train)
-    session.commit()
-    # 回调远程服务，将训练结果保存
-    save_train_model_result(result)
-    # 模型未训练
-    sys_model_info.model_value = "False"
-    session.merge(sys_model_info)
-    session.commit()
+
+    try:
+        model_train = ModelTrainEntity(
+            model_id=model_id,
+            user_account=user_account,
+            workspace=workspace,
+            train_data_path=train_data_path,
+            module=re_service.__name__,
+            remote_module=__name__,
+            if_delete=False,
+        )
+        # 保存训练记录到数据库
+        session.add(model_train)
+        session.commit()
+        # 开始训练
+        result = re_service.train_model(workspace, train_data_path)
+        if result["code"] == 500:
+            logger.error(f"执行模型训练逻辑发生异常，异常信息：{result['message']}")
+            # raise BizException(result["message"])
+        # 完成后，删除训练记录
+        model_train.if_delete = True
+        model_train.train_result = str(result)
+        session.merge(model_train)
+        session.commit()
+        # 回调远程服务，将训练结果保存
+        save_train_model_result(result)
+        # 模型未训练
+        sys_model_info.model_value = "False"
+        session.merge(sys_model_info)
+        session.commit()
+    except Exception as e:
+        logger.error(f"执行模型训练逻辑发生异常，异常信息：{e}")
+        session.rollback()
 
 
 def predict_re(model_id: int, user_account: str, predict_file: UploadFile = File(...)):
@@ -205,7 +255,3 @@ def save_train_model_result(result):
             logger.error(fail_message)
         else:
             logger.info(success_message)
-
-
-if __name__ == "__main__":
-    pass

@@ -36,7 +36,7 @@ import shutil
 import threading
 
 # 多进程相关
-from multiprocessing import Queue
+from multiprocessing import Queue, Process
 
 # 错误信息美化
 # import pretty_errors
