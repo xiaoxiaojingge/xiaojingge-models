@@ -9,6 +9,7 @@
 """
 import datetime
 import os
+import sys
 from functools import wraps
 
 # 路径相关
@@ -59,7 +60,11 @@ class Logger:
         return project_log_dir
 
     def logger_add(self):
+        # 删除默认处理程序的配置（其ID为0）
+        loguru.logger.remove(0)
         loguru.logger.add(
+            # 日志输出格式
+            format="[{time:YYYY-MM-DD HH:mm:ss}] - {module}:{line} - {level} - {message}",
             sink=os.path.join(
                 self.get_log_path(), "app_{}.log".format(datetime.date.today())
             ),
@@ -75,13 +80,27 @@ class Logger:
             encoding="utf-8",
             # 具有使日志记录调用非阻塞的优点，多进程/异步记录安全
             enqueue=True,
-            # 日志输出格式
-            format="[{time:YYYY-MM-DD HH:mm:ss}] - {module}:{line} - {level} - {message}",
             # 打印错误堆栈
             backtrace=True,
             diagnose=True,
         )
         loguru.logger.add(
+            sys.stdout,
+            # 日志输出格式
+            format="[<green>{time:YYYY-MM-DD HH:mm:ss}</green>] - "
+            "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - "
+            "<level>{level: <1}</level> - "
+            "<level>{message}</level>",
+            level="DEBUG",
+            # 具有使日志记录调用非阻塞的优点，多进程/异步记录安全
+            enqueue=True,
+            # 打印错误堆栈
+            backtrace=True,
+            diagnose=True,
+        )
+        loguru.logger.add(
+            # 日志输出格式
+            format="[{time:YYYY-MM-DD HH:mm:ss}] - {module}:{line} - {level} - {message}",
             sink=os.path.join(
                 self.get_log_path(), "app_error_{}.log".format(datetime.date.today())
             ),
@@ -97,8 +116,6 @@ class Logger:
             encoding="utf-8",
             # 具有使日志记录调用非阻塞的优点，多进程/异步记录安全
             enqueue=True,
-            # 日志输出格式
-            format="[{time:YYYY-MM-DD HH:mm:ss}] - {module}:{line} - {level} - {message}",
             # 打印错误堆栈
             backtrace=True,
             diagnose=True,

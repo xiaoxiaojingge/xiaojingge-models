@@ -48,7 +48,7 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
     if not train_file.filename.endswith(".bio"):
         return {
             "code": 400,
-            "msg": "模型训练语料文件格式错误，请上传.bio格式文件",
+            "message": "模型训练语料文件格式错误，请上传.bio格式文件",
             "data": {},
         }
     train_data = await train_file.read()
@@ -56,7 +56,7 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
     if len(train_data) == 0:
         return {
             "code": 400,
-            "msg": "模型训练语料文件为空，请上传非空文件",
+            "message": "模型训练语料文件为空，请上传非空文件",
             "data": {},
         }
     # 模型的语料数量

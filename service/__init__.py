@@ -7,3 +7,7 @@
 @Description: 
 ---------------------------------------
 """
+
+import service.task_relation_extraction_gplinker_bert4torch.model_service as re_service
+
+import service.third_party.demo_service as demo_service

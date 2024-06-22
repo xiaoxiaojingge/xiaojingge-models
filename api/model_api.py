@@ -11,13 +11,14 @@
 from fastapi import APIRouter, File, Form, UploadFile
 
 # 业务操作
-import service.task_relation_extraction_gplinker_bert4torch.model_service as re_service
+from service import *
+
 
 # 路由实例
 router = APIRouter()
 
 
 @router.post("/test")
-async def test(param: str = Form(...), file: UploadFile = File(...)):
-    result = await re_service.predict(model_id=2, predict_file=file)
+def test(param: str = Form(...), file: UploadFile = File(...)):
+    result = demo_service.train_model_re(2, "lijing", file)
     return result

@@ -188,7 +188,7 @@ class Evaluator(Callback):
         if f1 >= self.best_val_f1:
             self.best_val_f1 = f1
             self.model_server.model.save_weights(
-                self.model_server.model_dir + "/models/best_model_gplinker.pt"
+                self.model_server.workspace + "/models/best_model_gplinker.pt"
             )
             final_f1 = round(f1, 4)
             final_precision = round(precision, 4)
@@ -204,7 +204,7 @@ class ModelServer:
     模型训练类
     """
 
-    def __init__(self, model_dir: str, sign: str):
+    def __init__(self, workspace: str, sign: str):
         config = Config().get_project_config
         # 读取.ini文件，这里的文件使用相对路径拼接
         config.read(
@@ -213,7 +213,7 @@ class ModelServer:
         # 获取bert模型相关信息
         bert_model_path = config.get("bert", "model_path")
 
-        self.model_dir = model_dir
+        self.workspace = workspace
 
         # 邮件服务
         self.email_server = EmailServer(
@@ -253,7 +253,7 @@ class ModelServer:
 
         predicate2id, id2predicate = {}, {}
 
-        with open(model_dir + "/train/all_schemas", encoding="utf-8") as f:
+        with open(workspace + "/train/all_schemas", encoding="utf-8") as f:
             for l in f:
                 l = json.loads(l)
                 if l["predicate"] not in predicate2id:
@@ -263,14 +263,14 @@ class ModelServer:
         self.id2predicate = id2predicate
 
         if sign == "train":
-            self.train_dataset = MyDataset(self.model_dir + "/train/train.re")
+            self.train_dataset = MyDataset(self.workspace + "/train/train.re")
             self.train_dataloader = DataLoader(
                 self.train_dataset,
                 batch_size=self.batch_size,
                 shuffle=True,
                 collate_fn=self.collate_fn,
             )
-            self.valid_dataset = MyDataset(self.model_dir + "/train/valid.re")
+            self.valid_dataset = MyDataset(self.workspace + "/train/valid.re")
             self.valid_dataloader = DataLoader(
                 self.valid_dataset,
                 batch_size=self.batch_size,
@@ -279,7 +279,7 @@ class ModelServer:
 
         # 封装常用参数传递
         self.params = {
-            "model_dir": self.model_dir,
+            "workspace": self.workspace,
             "max_len": self.max_len,
             "batch_size": self.batch_size,
             "learning_rate": self.learning_rate,
@@ -429,7 +429,7 @@ class ModelServer:
         """
         global f1, precision, recall
         X, Y, Z = 0, 1e-10, 1e-10
-        f = open(self.model_dir + "/dev_pred.json", "w", encoding="utf-8")
+        f = open(self.workspace + "/dev_pred.json", "w", encoding="utf-8")
         pbar = tqdm()
         for d in data:
             R = set([SPO(spo, self.params) for spo in self.extract_spoes(d["text"])])
@@ -467,7 +467,7 @@ class ModelServer:
         try:
             evaluator = Evaluator(self)
             logger.info(
-                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
+                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.workspace}"
             )
             self.model.fit(
                 self.train_dataloader,
@@ -524,7 +524,7 @@ class ModelServer:
         try:
             evaluator = Evaluator(self)
             logger.info(
-                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
+                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.workspace}"
             )
             self.model.fit(
                 self.train_dataloader,
@@ -581,7 +581,7 @@ class ModelServer:
         try:
             evaluator = Evaluator(self)
             logger.info(
-                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.model_dir}"
+                f"实体关系抽取模型开始训练，模型训练以及语料存储路径为：{self.workspace}"
             )
             self.model.fit(
                 self.train_dataloader,
@@ -640,7 +640,7 @@ class ModelServer:
         # 模型推理走CPU
         os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
         try:
-            self.model.load_weights(self.model_dir + "/models/best_model_gplinker.pt")
+            self.model.load_weights(self.workspace + "/models/best_model_gplinker.pt")
 
             results = []
             for content in predict_contents:

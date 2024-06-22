@@ -143,34 +143,23 @@ def generate_all_schemas(source_file, target_file):
                 file.write("\n")
 
 
-async def train_model(model_id: int, train_file: UploadFile = File(...)):
+def train_model(workspace: str, train_data_path: str):
     """
     模型训练
-    :param model_id: 模型id，模型管理的数据库id，用于区分本地模型信息
-    :param train_file: 模型训练语料
+    :param workspace: 工作目录
+    :param train_data_path: 模型训练语料本地地址
     :return:
     """
     try:
-        if not train_file.filename.endswith(".re"):
-            logger.error("模型训练语料文件格式错误，请上传.re格式文件")
-            raise BizException("模型训练语料文件格式错误，请上传.re格式文件")
-        train_data = await train_file.read()
-
-        if len(train_data) == 0:
-            logger.error("模型训练语料文件为空，请上传非空文件")
-            raise BizException("模型训练语料文件为空，请上传非空文件")
         # 模型的语料数量
-        train_data_count = common_util.count_lines(train_data)
+        train_data_count = common_util.count_lines(train_data_path)
         logger.info(f"本次模型训练语料数量为 {train_data_count} ......")
-        # 读取.ini文件
-        config.read("config/config.ini")
-        train_data_dir = config.get("model_train", "model_train_dir")
         # 模型训练路径
-        model_train_dir = f"{train_data_dir}/re/{str(model_id)}/train"
+        model_train_dir = f"{workspace}/train"
         logger.info("开始执行模型训练逻辑......")
         logger.info(f"模型训练目录为 {model_train_dir}......")
         # 模型保存路径
-        model_save_dir = f"{train_data_dir}/re/{str(model_id)}/models"
+        model_save_dir = f"{workspace}/models"
         logger.info(f"模型产物保存目录为 {model_save_dir}......")
         # 检查训练目录是否存在
         if not os.path.exists(model_train_dir):
@@ -196,10 +185,8 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
             shutil.copy(f"{model_save_dir}/{model_name}", backup_file_path)
             os.remove(f"{model_save_dir}/{model_name}")
 
-        #  将上传的压缩包保存到本地目录
-        with open(f"{model_train_dir}/all.re", "wb") as f:
-            logger.info("开始保存模型训练语料......")
-            f.write(train_data)
+        #  将上传的语料文件拷贝到模型训练目录下
+        shutil.copyfile(train_data_path, f"{model_train_dir}/all.re")
 
         split_train_data(
             model_train_dir + "/all.re",
@@ -219,7 +206,7 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
         # 保存结果的队列
         result_queue = Queue()
         # 定义一个进程，传入参数和队列
-        model_server = ModelServer(f"{train_data_dir}/re/{str(model_id)}", "train")
+        model_server = ModelServer(workspace, "train")
         t = threading.Thread(target=model_server.start_train, args=(result_queue,))
         # 开启进程，等待调度
         t.start()
@@ -239,23 +226,23 @@ async def train_model(model_id: int, train_file: UploadFile = File(...)):
         logger.error(f"模型训练异常，异常信息为：{e}")
         result = {
             "code": 500,
-            "msg": f"模型训练异常，异常信息为：{e}",
+            "message": f"模型训练异常，异常信息为：{e}",
             "data": {},
         }
         return result
 
 
-async def predict(model_id: int, predict_file: UploadFile = File(...)):
+def predict(workspace: str, predict_file: UploadFile = File(...)):
     """
     模型推理
-    :param model_id: 需要使用的模型id，用户寻址本地的模型文件
+    :param workspace: 工作目录
     :param predict_file: 预测数据文件
     :return:
     """
     try:
 
         # 读取预测文件数据
-        predict_data = await predict_file.read()
+        predict_data = predict_file.file.read()
         # 将file_data转为类文件，可以像文件一样操作
         zip_file = io.BytesIO(predict_data)
         # 需要预测的内容，一行一句话
@@ -264,8 +251,6 @@ async def predict(model_id: int, predict_file: UploadFile = File(...)):
             raise BizException(
                 "传入的待预测的文本数量为0，请检查输入数据是否符合要求！"
             )
-        # 读取.ini文件
-        config.read("config/config.ini")
         # 获取模型路径
         # 读取.ini文件
         config.read("config/config.ini")
@@ -274,7 +259,7 @@ async def predict(model_id: int, predict_file: UploadFile = File(...)):
         # re模型结果队列
         re_result_queue = Queue()
         # re模型任务
-        model_server = ModelServer(f"{train_data_dir}/re/{str(model_id)}", "predict")
+        model_server = ModelServer(workspace, "predict")
         re_thread = threading.Thread(
             target=model_server.start_predict, args=(predict_contents, re_result_queue)
         )
@@ -289,7 +274,7 @@ async def predict(model_id: int, predict_file: UploadFile = File(...)):
         logger.error(f"模型推理异常，异常信息为：{e}")
         result = {
             "code": 500,
-            "msg": f"模型推理异常，异常信息为：{e}",
+            "message": f"模型推理异常，异常信息为：{e}",
             "data": {},
         }
         return result

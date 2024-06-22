@@ -24,20 +24,39 @@ from api import model_api
 # 日志打印类
 from config.logger import Logger
 
-# 数据库相关
-import db
-
 app = FastAPI()
 config = Config().get_project_config
 logger = Logger().get_logger
 
 if __name__ == "__main__":
-    # 读取.ini文件
-    config.read("config/config.ini")  # 获取配置信息
-    port = int(config.get("uvicorn", "port"))
-    # 添加路由
-    # 模型相关路由
-    app.include_router(model_api.router)
-    logger.info(f"本程序将在{port}端口运行......")
-    # 运行
-    uvicorn.run(app=app, host="0.0.0.0", port=port, workers=1, log_level="error")
+    try:
+        # 读取.ini文件
+        config.read("config/config.ini")  # 获取配置信息
+        port = int(config.get("uvicorn", "port"))
+        # 添加路由
+        # 模型相关路由
+        app.include_router(model_api.router)
+        logger.info(f"本程序将在{port}端口运行......")
+        # 系统运行初始化模型是否训练为否
+        # 数据库相关
+        import db
+        from db.entities import *
+
+        with next(db.get_db()) as session:
+            sys_model_info = (
+                session.query(ModelInfoEntity)
+                .filter(ModelInfoEntity.model_param == "is_train")
+                .first()
+            )
+            if sys_model_info is None:
+                sys_model_info = ModelInfoEntity(
+                    model_param="is_train", model_value="False"
+                )
+                session.add(sys_model_info)
+            else:
+                sys_model_info.model_value = "False"
+            session.commit()
+        # 运行
+        uvicorn.run(app=app, host="0.0.0.0", port=port, workers=1, log_level="error")
+    except Exception as e:
+        logger.error(f"程序主程序运行发生异常: {e}")
