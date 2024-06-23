@@ -11,7 +11,7 @@
 from sqlalchemy import create_engine, event
 from sqlalchemy.exc import DisconnectionError
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine import Engine
 
 # 配置相关
@@ -57,7 +57,7 @@ def get_engine(echo: bool = False) -> Engine:
         mysql_url,
         echo=True,
         pool_pre_ping=True,
-        pool_size=100,
+        pool_size=500,
         pool_recycle=360,
     )
 
@@ -79,7 +79,7 @@ def get_engine(echo: bool = False) -> Engine:
 engine = get_engine()
 
 event.listen(engine, "checkout", checkout_listener)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=True, bind=engine)
 
 # 创建基类
 Base = declarative_base()

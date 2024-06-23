@@ -8,24 +8,8 @@
 ---------------------------------------
 """
 
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, TIMESTAMP, func
 from db import Base, engine
-
-
-class ModelInfoEntity(Base):
-    """
-    模型实体
-    """
-
-    __tablename__ = "model_info"
-    __table_args__ = {"comment": "模型信息"}
-
-    id = Column("id", Integer, primary_key=True, autoincrement=True, comment="主键id")
-    model_param = Column("model_param", String(50), nullable=True, comment="模型参数")
-    model_value = Column("model_value", String(50), nullable=True, comment="模型值")
-    version = Column(
-        "version", Integer, nullable=False, default=0, comment="乐观锁版本号"
-    )
 
 
 class ModelTrainEntity(Base):
@@ -47,9 +31,15 @@ class ModelTrainEntity(Base):
     remote_module = Column(
         "remote_module", String(200), nullable=True, comment="远程模块"
     )
-    if_delete = Column("if_delete", Boolean, nullable=True, comment="是否删除")
     train_result = Column(
         "train_result", String(200), nullable=True, comment="训练结果"
+    )
+    create_time = Column(
+        "create_time",
+        TIMESTAMP,
+        nullable=True,
+        server_default=func.now(),
+        comment="创建时间",
     )
 
 

@@ -19,6 +19,6 @@ router = APIRouter()
 
 
 @router.post("/test")
-def test(param: str = Form(...), file: UploadFile = File(...)):
-    result = demo_service.train_model_re(2, "lijing", file)
+def test(modelId: int = Form(...), file: UploadFile = File(...)):
+    result = demo_service.train_model_re(modelId, "lijing", file)
     return result
