@@ -26,13 +26,29 @@ def process_model_train_task(body, message):
     :param message:
     :return:
     """
-    model_train_entity = ast.literal_eval(body)
-    model_id = model_train_entity.get("model_id")
-    workspace = model_train_entity.get("workspace")
-    train_data_path = model_train_entity.get("train_data_path")
-    user_account = model_train_entity.get("user_account")
-    train_model_logic(model_id, workspace, train_data_path, user_account)
-    message.ack()
+    try:
+        model_train_entity = ast.literal_eval(body)
+        model_id = model_train_entity.get("model_id")
+        workspace = model_train_entity.get("workspace")
+        train_data_path = model_train_entity.get("train_data_path")
+        user_account = model_train_entity.get("user_account")
+        train_model_logic(model_id, workspace, train_data_path, user_account)
+        message.ack()
+    except Exception as e:
+        # 失败时拒绝消息
+        message.reject(requeue=True)
+
+
+def process_message(body, message):
+    """
+    处理消息
+    :param body:
+    :param message:
+    :return:
+    """
+    # 使用线程来处理消息
+    t = threading.Thread(target=process_model_train_task, args=(body, message))
+    t.start()
 
 
 class Worker(ConsumerMixin):
@@ -40,12 +56,14 @@ class Worker(ConsumerMixin):
         self.connection = connection
 
     def get_consumers(self, Consumer, channel):
-        # 创建消费者，指定回调函数
-        return [
-            Consumer(
-                queues=[queue], accept=["json"], callbacks=[process_model_train_task]
-            )
-        ]
+        # 创建消费者，指定回调函数和 QoS 设置
+        consumer = Consumer(
+            queues=[queue], accept=["json"], callbacks=[process_message]
+        )
+        # 设置 QoS
+        channel.basic_qos(prefetch_count=2)
+
+        return [consumer]
 
 
 def run_consumer():

@@ -132,14 +132,7 @@ def train_model_logic(model_id, workspace, train_data_path, user_account):
     """
     try:
         # 开始训练
-        # result = re_service.train_model(workspace, train_data_path)
-
-        # TODO
-        result = {"code": 200, "message": "模型训练任务执行结束！", "data": {}}
-        import time
-
-        time.sleep(10)
-
+        result = re_service.train_model(workspace, train_data_path)
         session = next(db.get_db())
         model_train = ModelTrainEntity(
             model_id=model_id,
