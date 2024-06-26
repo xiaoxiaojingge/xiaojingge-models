@@ -9,6 +9,10 @@
 """
 
 import zipfile
+import sys
+from config.logger import Logger
+
+logger = Logger().get_logger
 
 
 def count_lines(filename):
@@ -20,6 +24,38 @@ def count_lines(filename):
     with open(filename, "r", encoding="utf-8") as file:
         lines = sum(1 for line in file)
     return lines
+
+
+def print_banner():
+    """
+    打印banner
+    :return:
+    """
+    logger.debug(
+f"""
+Python Version: {sys.version}
+////////////////////////////////////////////////////////////////////
+//                          _ooOoo_                               //
+//                         o8888888o                              //
+//                         88" . "88                              //
+//                         (| ^_^ |)                              //
+//                         O\  =  /O                              //
+//                      ____/`---'\____                           //
+//                    .'  \\\\|     |//  `.                         //
+//                   /  \\\\|||  :  |||//  \                        //
+//                  /  _||||| -:- |||||-  \                       //
+//                  |   | \\\\\  -  /// |   |                       //
+//                  | \_|  ''\---/''  |   |                       //
+//                  \  .-\__  `-`  ___/-. /                       //
+//                ___`. .'  /--.--\  `. . ___                     //
+//              ."" '<  `.___\_<|>_/___.'  >'"".                  //
+//            | | :  `- \`.;`\ _ /`;.`/ - ` : | |                 //
+//            \  \ `-.   \_ __\ /__ _/   .-` /  /                 //
+//      ========`-.____`-.___\_____/___.-`____.-'========         //
+//                           `=---='                              //
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        //
+//             佛祖保佑       永不宕机      永无BUG                  //
+////////////////////////////////////////////////////////////////////""")
 
 
 def extract_txt_from_zip(zip_file):
@@ -35,3 +71,14 @@ def extract_txt_from_zip(zip_file):
             txt_content = file_zip.read(file_name).decode("utf-8")
             file_contents.append(txt_content)
     return file_contents
+
+
+def readBanner(banner_path):
+    """
+    读取banner信息
+    :param banner_path:
+    :return:
+    """
+    with open(banner_path, "r") as file:
+        banner = file.read()
+    return banner

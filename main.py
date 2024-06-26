@@ -24,8 +24,11 @@ from config.logger import Logger
 # 数据库相关
 import db
 
-# redis
-from utils.redis_util import RedisUtil
+# 系统相关
+import sys
+
+# 工具类
+from utils import *
 
 # 消费者
 # from mq.consumer import run_consumer
@@ -33,8 +36,6 @@ from utils.redis_util import RedisUtil
 app = FastAPI()
 config = Config().get_project_config
 logger = Logger().get_logger
-redis_util = RedisUtil(host="192.168.0.201", db=15, password="123456")
-
 
 if __name__ == "__main__":
     try:
@@ -50,7 +51,11 @@ if __name__ == "__main__":
         # 系统运行初始化模型是否训练为否
         # redis_util.set("model:train_status", "false")
 
-        logger.info(f"本程序将在{port}端口运行......")
+        # 打印banner
+        common_util.print_banner()
+        logger.success(f"本程序将在{port}端口运行......")
+
+        logger.success("(♥◠‿◠)ﾉﾞ  启动成功   ლ(´ڡ`ლ)ﾞ")
 
         # run_consumer()
         # logger.info("启动消息队列消费未训练完成的任务......")

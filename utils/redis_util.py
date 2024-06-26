@@ -9,6 +9,12 @@
 """
 import redis
 from typing import Any, List, Dict
+import configparser
+
+# 配置相关
+from config.config import Config
+
+config = Config().get_project_config
 
 
 class RedisUtil:
@@ -237,9 +243,14 @@ class RedisUtil:
         return bool(self.client.delete(lock_name))
 
 
+# redis_util对象
+redis_util = RedisUtil(
+    host=config.get("redis", "host"), password=config.get("redis", "password"), db=15
+)
+
+
 if __name__ == "__main__":
     # 加锁操作
-    redis_util = RedisUtil(host="192.168.0.201", db=15, password="123456")
     redis_util.set("train_status", "false")
     # lock_name = "train_lock"
     # # 尝试获取锁，超时时间设为60秒

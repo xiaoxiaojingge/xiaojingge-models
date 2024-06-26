@@ -45,12 +45,10 @@ import threading
 from mq.producer import publish_message
 
 # redis
-from utils.redis_util import RedisUtil
+from utils.redis_util import redis_util
 
 config = Config().get_project_config
 logger = Logger().get_logger
-redis_util = RedisUtil(host="192.168.0.201", db=15, password="123456")
-
 
 def train_model_re(
     model_id: int,
