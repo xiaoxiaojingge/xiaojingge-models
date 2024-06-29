@@ -15,7 +15,7 @@ from db import Base, engine
 class ModelTrainEntity(Base):
     """
     模型训练实体，待训练的模型信息
-    """0
+    """
 
     __tablename__ = "model_train"
     __table_args__ = {"comment": "模型训练"}
