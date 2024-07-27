@@ -9,7 +9,6 @@
 """
 
 # async
-import asyncio
 
 # 配置相关
 from config.config import Config
@@ -36,7 +35,7 @@ import shutil
 import threading
 
 # 多进程相关
-from multiprocessing import Queue, Process
+from multiprocessing import Queue
 
 # 错误信息美化
 # import pretty_errors
@@ -54,13 +53,12 @@ from config.logger import Logger
 from exception.CustomException import BizException
 
 # 实体关系抽取模型服务
-from models.task_relation_extraction_gplinker_bert4torch.model_server import ModelServer
+from models.task_relation_extraction.gplinker_bert4torch.model_server import ModelServer
 
 # 公共工具类
 from utils import common_util
 
 # 多线程相关
-import concurrent.futures
 
 # 配置对象
 config = Config().get_project_config

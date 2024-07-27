@@ -27,7 +27,7 @@ from fastapi import File, UploadFile
 from config.logger import Logger
 
 # 命名实体识别模型服务
-from models.task_sequence_labeling_ner_global_pointer_bert4torch.model_server import (
+from models.task_sequence_labeling.ner_global_pointer_bert4torch.model_server import (
     ModelServer,
 )
 

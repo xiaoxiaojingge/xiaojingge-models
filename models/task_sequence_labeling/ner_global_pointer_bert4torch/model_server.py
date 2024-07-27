@@ -4,7 +4,7 @@
 @Time    : 2024-06-18 15:44
 @Author  : lijing
 @File    : model_server.py
-@Description: 命名实体识别模型（task_sequence_labeling_ner_global_pointer_bert4torch）
+@Description: 命名实体识别模型（ner_global_pointer_bert4torch）
 ---------------------------------------
 """
 
@@ -368,7 +368,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "命名实体识别模型训练过程中出现异常",
-                "【task_sequence_labeling_ner_global_pointer_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                "【ner_global_pointer_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
                     e
                 ),
             )
@@ -417,7 +417,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "命名实体识别模型推理过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
+                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
                     e
                 ),
             )

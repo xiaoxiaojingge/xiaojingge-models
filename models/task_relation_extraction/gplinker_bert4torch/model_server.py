@@ -4,7 +4,7 @@
 @Time    : 2024-06-17 22:33
 @Author  : lijing
 @File    : model_server.py
-@Description: 实体关系抽取模型（task_relation_extraction_gplinker_bert4torch）
+@Description: 实体关系抽取模型（gplinker_bert4torch）
 三元组抽取任务，基于GlobalPointer的仿TPLinker设计
 ---------------------------------------
 """
@@ -495,7 +495,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
                     e
                 ),
             )
@@ -562,7 +562,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
                     e
                 ),
             )
@@ -619,7 +619,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
                     e
                 ),
             )
@@ -667,7 +667,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型推理过程中出现异常",
-                "【task_relation_extraction_gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
+                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
                     e
                 ),
             )
