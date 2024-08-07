@@ -4,7 +4,7 @@
 @Time    : 2024-08-07 20:13
 @Author  : lijing
 @File    : pytorch_kmeans.py
-@Description:
+@Description: kmeans_pytorch实现聚类
 ---------------------------------------
 """
 
@@ -54,16 +54,16 @@ corpus_embeddings = embedder.encode(corpus)
 # 使用GPU加速
 corpus_embeddings = torch.from_numpy(corpus_embeddings).to("cuda")
 # 分类类别数
-num_class = 3
+class_num = 3
 
 labels, cluster_centers = kmeans(
     X=corpus_embeddings,
-    num_clusters=num_class,
+    num_clusters=class_num,
     distance="euclidean",
     device=torch.device("cuda:0"),
 )
 
-class_data = {i: [] for i in range(num_class)}
+class_data = {i: [] for i in range(class_num)}
 
 for text, cls in zip(corpus, labels):
     class_data[cls.item()].append(text)
