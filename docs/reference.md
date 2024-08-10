@@ -19,3 +19,13 @@
 [一次看懂LSA算法：一个简单而详细的计算过程示例](https://blog.csdn.net/quicmous/article/details/130719197)
 
 [时间序列预测项目，采用不同的深度学习、机器学习算法，进行时间序列预测。包含不同预测算法与预测场景](https://github.com/kingOfFps/timeseries-prediction)
+
+[【深度学习&NLP】基于卷积神经网络(CNN)实现中文文本情感分析(分类)附代码以及数据集链接](https://blog.csdn.net/weixin_52185996/article/details/130028929)
+
+[基于词典的文本情感分析（附代码）](https://zhuanlan.zhihu.com/p/142011031)
+
+[文本分类 [ALBERT+TextCNN] [中文情感分析]（附代码）](https://zhuanlan.zhihu.com/p/149491055)
+
+[基于 SVM 和 TF-IDF 算法的中文文本分类和情感分析系统](https://github.com/Puteto/ChineseClassification?tab=readme-ov-file)
+
+[文本数据挖掘大作业，分别用朴素贝叶斯，SVM，情感词典，LSTM，textcnn实现情感分析](https://github.com/hxy-62/sentimentclassify)
