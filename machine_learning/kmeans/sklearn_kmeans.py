@@ -228,7 +228,7 @@ vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5)
 transformer = TfidfTransformer()
 # 第一个fit_transform是计算tf-idf 第二个fit_transform是将文本转为词频矩阵
 tfidf = transformer.fit_transform(vectorizer.fit_transform(sentences))
-# 获取词袋模型中的所有词语
+# 获取词袋模型中的特征词
 word = vectorizer.get_feature_names_out()
 # 将tf-idf矩阵抽取出来，元素w[i][j]表示j词在i类文本中的tf-idf权重
 weight = tfidf.toarray()
@@ -261,26 +261,30 @@ for i in range(class_num):
     texts = [word for sentence in handle_sentences for word in sentence.split(" ")]
     # print(texts)
     # 将文本列表转换为词频矩阵
-    vectorizer = CountVectorizer()
-    X = vectorizer.fit_transform(texts)
-
-    # 获取词袋模型中的所有词语
-    words = vectorizer.get_feature_names_out()
+    count_vectorizer = CountVectorizer()
+    X = count_vectorizer.fit_transform(texts)
+    # 获取词袋模型中的特征词
+    feature_names = count_vectorizer.get_feature_names_out()
+    # 词频矩阵
+    matrix = X.toarray()
+    df = pd.DataFrame(matrix, columns=feature_names)
+    class_keywords.append(df)
 
     # 遍历词频矩阵的每一列，找到最高词频的词语
-    max_freq_words = []
-    for j in range(X.shape[1]):
-        word_freq = X[:, j].sum()
-        if word_freq > 0:
-            max_freq_words.append((word_freq, words[j]))
+    # max_freq_words = []
+    # for j in range(X.shape[1]):
+    #     word_freq = X[:, j].sum()
+    #     if word_freq > 0:
+    #         max_freq_words.append((word_freq, words[j]))
 
     # 根据词频排序，并选择最高词频的词语
-    max_freq_words.sort(reverse=True)
-    top_word_freq = max_freq_words[0][0]
-    top_word = max_freq_words[0][1]
+    # max_freq_words.sort(reverse=True)
+    # top_word_freq = max_freq_words[0][0]
+    # top_word = max_freq_words[0][1]
     # 将词频和词语记录
-    class_keywords.append([top_word_freq, top_word])
+    # class_keywords.append([top_word_freq, top_word])
+
 
 # 输出每个类别下的最高词频词
 for i, keyword in enumerate(class_keywords):
-    print("Class {}: {}".format(i, keyword))
+    print("Class {}:\n {}".format(i, keyword))
