@@ -16,4 +16,6 @@
 
 [主题模型之LSA代码_基于tf-idf的lsa的代码-CSDN博客](https://blog.csdn.net/GreatXiang888/article/details/107090105)
 
+[一次看懂LSA算法：一个简单而详细的计算过程示例](https://blog.csdn.net/quicmous/article/details/130719197)
+
 [时间序列预测项目，采用不同的深度学习、机器学习算法，进行时间序列预测。包含不同预测算法与预测场景](https://github.com/kingOfFps/timeseries-prediction)
