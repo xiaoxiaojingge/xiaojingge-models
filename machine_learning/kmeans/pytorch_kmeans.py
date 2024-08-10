@@ -10,12 +10,18 @@
 
 # pip install fast-pytorch-kmeans kmeans_pytorch text2vec
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 import torch
 import numpy as np
 
-from kmeans_pytorch import kmeans
+from kmeans_pytorch import kmeans, kmeans_predict
 from text2vec import SentenceModel
+
+from sklearn.feature_extraction.text import TfidfTransformer, TfidfVectorizer
+
+import jieba
 
 # from sklearn.decomposition import PCA
 # import matplotlib.pyplot as plt
@@ -53,19 +59,103 @@ with open(f"corpus/corpus_train.txt", mode="r", encoding="utf-8") as file:
 corpus_embeddings = embedder.encode(corpus)
 # 使用GPU加速
 corpus_embeddings = torch.from_numpy(corpus_embeddings).to("cuda")
-# 分类类别数
-class_num = 3
 
+# 数据标准化（如果需要）
+# data_mean = torch.mean(corpus_embeddings, dim=0)
+# data_std = torch.std(corpus_embeddings, dim=0)
+# data_normalized = (corpus_embeddings - data_mean) / data_std
+
+data_normalized = corpus_embeddings
+
+# 定义参数
+num_clusters = 3
+max_iters = 1000  # 自定义最大迭代次数
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# 初始化
+current_iter = 0
+converged = False
+prev_centers = None
+cluster_centers = None
+cluster_ids = None
+
+"""
 labels, cluster_centers = kmeans(
     X=corpus_embeddings,
-    num_clusters=class_num,
+    num_clusters=num_clusters,
     distance="euclidean",
     device=torch.device("cuda:0"),
 )
 
-class_data = {i: [] for i in range(class_num)}
-
+class_data = {i: [] for i in range(num_clusters)}
 for text, cls in zip(corpus, labels):
     class_data[cls.item()].append(text)
+print(class_data)
 
+"""
+
+while not converged and current_iter < max_iters:
+    # 执行KMeans
+    cluster_ids, cluster_centers = kmeans(
+        X=data_normalized,
+        num_clusters=num_clusters,
+        distance="euclidean",
+        tol=1e-4,
+        device=device,
+    )
+
+    # 检查收敛条件
+    if prev_centers is not None:
+        center_change = torch.norm(cluster_centers - prev_centers, p="fro")
+        if center_change < 1e-4:
+            converged = True
+    prev_centers = cluster_centers
+    current_iter += 1
+
+print("Cluster Centers:\n", cluster_centers)
+print("Labels:\n", cluster_ids)
+
+# 执行 KMeans 预测
+new_data_labels = kmeans_predict(
+    X=data_normalized,
+    cluster_centers=cluster_centers,
+    distance="euclidean",
+    device=device,
+)
+print("Predicted Labels:\n", new_data_labels)
+
+# 将聚类中心移动到设备
+cluster_centers = cluster_centers.to(device)
+
+
+def compute_sse1(data, cluster_centers, cluster_ids):
+    sse = 0.0
+    for i, center in enumerate(cluster_centers):
+        cluster_points = data[cluster_ids == i]
+        sse += torch.sum((cluster_points - center) ** 2)
+    return sse.item()
+
+
+sse1 = compute_sse1(data_normalized, cluster_centers, cluster_ids)
+print(f"SSE: {sse1}")
+
+
+def compute_sse2(data, cluster_centers):
+    # 将聚类中心移动到设备
+    cluster_centers = cluster_centers.to(device)
+    # 计算每个数据点到其簇中心的距离
+    distances = torch.cdist(data, cluster_centers)
+    # 找到每个数据点的最近簇中心
+    min_distances, _ = torch.min(distances, dim=1)
+    # 计算 SSE（平方距离和）
+    sse = torch.sum(min_distances**2).item()
+    return sse
+
+
+sse2 = compute_sse2(data_normalized, cluster_centers)
+print(f"SSE: {sse2}")
+
+class_data = {i: [] for i in range(num_clusters)}
+for text, cls in zip(corpus, cluster_ids):
+    class_data[cls.item()].append(text)
 print(class_data)
