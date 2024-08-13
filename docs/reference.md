@@ -30,6 +30,6 @@
 
 [文本数据挖掘大作业，分别用朴素贝叶斯，SVM，情感词典，LSTM，textcnn实现情感分析](https://github.com/hxy-62/sentimentclassify)
 
-[TextCNN在pytorch中的实现](https://github.com/NeoTse0622/TextCNN-pytorch[)
+[TextCNN在pytorch中的实现](https://github.com/NeoTse0622/TextCNN-pytorch)
 
 [pytextclassifier is a toolkit for text classification. 文本分类，LR，Xgboost，TextCNN，FastText，TextRNN，BERT等分类模型实现，开箱即用。](https://github.com/shibing624/pytextclassifier)
