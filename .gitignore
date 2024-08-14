@@ -141,3 +141,6 @@ cython_debug/
 
 # model
 *.pth
+*.pkl
+*.pt
+*.model

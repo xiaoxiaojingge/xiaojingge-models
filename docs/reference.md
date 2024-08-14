@@ -33,3 +33,11 @@
 [TextCNN在pytorch中的实现](https://github.com/NeoTse0622/TextCNN-pytorch)
 
 [pytextclassifier is a toolkit for text classification. 文本分类，LR，Xgboost，TextCNN，FastText，TextRNN，BERT等分类模型实现，开箱即用。](https://github.com/shibing624/pytextclassifier)
+
+[【深度学习】基于SVM的文本情感分类模型-](https://blog.csdn.net/qq_74144402/article/details/140697588)
+
+[文本分类与情感分析算法：支持向量机（SVM）](https://blog.csdn.net/asd343442/article/details/136429216)
+
+[[ML] 基于SVM的传统ML方法完成情感分析任务（包含所有数据集，从0开始构建，可放心食用！）](https://blog.csdn.net/cjh0318/article/details/127874523)
+
+[项目需要做一个商品文本的简单分类，采用TF-IDF统计词频后用SVM进行分类](https://github.com/Fengyijun/zhong_wen_shang_pin_fen_lei_SVM)
