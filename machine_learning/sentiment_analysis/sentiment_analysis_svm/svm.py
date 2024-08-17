@@ -25,7 +25,7 @@ df_neg = df_neg.dropna()
 pos = df_pos.content.values.tolist()[1000:11000]
 neg = df_neg.content.values.tolist()[1000:11000]
 
-stopwords = pd.read_csv('row_data/stopwords.txt', index_col=False, quoting=3, sep='\t', names=['stopword'], encoding='utf-8')
+stopwords = pd.read_csv('./row_data/stopwords.txt', index_col=False, quoting=3, sep='\t', names=['stopword'], encoding='utf-8')
 stopwords = stopwords['stopword'].values
 
 print(len(stopwords))
@@ -60,7 +60,6 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 # print(f'len(y_train): {len(y_train)}')
 # print(f'len(y_test): {len(y_test)}')
 
-
 # 使用TFIDF模型和SVM进行模型训练
 tfidf_svm_sentiment_model = Pipeline([('TFIDF', TfidfVectorizer()), ('SVM', SVC(C=0.95, kernel="linear", probability=True))])
 tfidf_svm_sentiment_model.fit(x_train[:10000], y_train[:10000])
@@ -85,7 +84,7 @@ def IsPoOrNeg(text):
     # text = Jieba_Intensify(text)
     # y_pre = model.predict([text])
     # print(y_pre)
-    proba = model.predict_proba([text])[0]
+    proba = model.predict_probag([text])[0]
     # print(proba)
     if proba[1] > 0.4:
         print(text, ":此话极大可能是积极情绪（概率：）" + str(proba[1]))
