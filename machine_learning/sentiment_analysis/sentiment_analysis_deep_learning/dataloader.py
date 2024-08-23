@@ -51,5 +51,5 @@ class TextDataset(Dataset):
         label = self.labels[idx]
         encoding = self.tokenizer(text, truncation=True, padding='max_length', max_length=self.max_length, return_tensors='pt')
         item = {key: val.squeeze(0) for key, val in encoding.items()}
-        item['labels'] = torch.tensor(label)
+        item['lables'] = torch.tensor(label)
         return item

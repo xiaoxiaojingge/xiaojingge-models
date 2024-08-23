@@ -7,11 +7,12 @@
 @Description: 模型相关接口
 ---------------------------------------
 """
+import time
 
 from fastapi import APIRouter, File, Form, UploadFile
 
 # 业务操作
-from service import *
+# from service import *
 
 
 # 路由实例
@@ -20,5 +21,8 @@ router = APIRouter()
 
 @router.post("/test")
 def test(modelId: int = Form(...), file: UploadFile = File(...)):
-    result = demo_service.train_model_re(modelId, "lijing", file)
+    # result = demo_service.train_model_re(modelId, "lijing", file)
+    result = []
+    print(111)
+    time.sleep(10)
     return result
