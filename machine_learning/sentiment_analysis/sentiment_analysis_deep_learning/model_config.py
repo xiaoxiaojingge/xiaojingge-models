@@ -37,7 +37,7 @@ class Config:
     def __init__(self):
         self.vocab_size = 30000
         self.embed_size = 300
-        self.num_classes = 10
+        self.num_classes = 2
         self.kernel_sizes = [3, 4, 5]
         self.num_channels = 100
         self.dropout = 0.5

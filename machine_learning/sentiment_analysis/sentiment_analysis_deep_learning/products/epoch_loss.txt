@@ -12,3 +12,5 @@ Epoch 1, Start Time: 2024-09-21 10:02:59, Train Loss: 0.6436, Val Loss: 0.3059
 Epoch 2, Start Time: 2024-09-21 10:04:16, Train Loss: 0.4061, Val Loss: 0.2396
 Epoch 1, Start Time: 2024-09-21 11:35:41, Train Loss: 0.0939, Val Loss: 0.0572
 Epoch 2, Start Time: 2024-09-21 11:37:47, Train Loss: 0.0744, Val Loss: 0.0575
+Epoch 1, Start Time: 2024-09-21 12:20:46, Train Loss: 0.0925, Val Loss: 0.0510
+Epoch 2, Start Time: 2024-09-21 12:22:56, Train Loss: 0.0765, Val Loss: 0.0519
