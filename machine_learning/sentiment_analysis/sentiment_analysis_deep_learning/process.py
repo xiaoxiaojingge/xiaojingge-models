@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-13 19:00
 @Author  : lijing
 @File    : process.py
 @Description: 处理数据
 ---------------------------------------
-'''
+"""
 import pandas as pd
 
 # 读取原始CSV文件
-df = pd.read_csv('dataset/train.csv')
+df = pd.read_csv("dataset/train.csv")
 
 # 调整列的顺序，或者增删列
 # df = df[['content', 'label']]
@@ -29,6 +29,6 @@ sample_df = df.sample(n=200, random_state=42)  # random_state用于确保结果�
 # sample_df.to_csv('dataset/valid.csv', index=False)
 
 # 取出content字段，然后结果为id,content，其中id自增，最终csv文件字段为 id,content
-df = sample_df.reset_index().rename(columns={'index': 'id'})
-df = df[['id', 'content']]
-df.to_csv('dataset/test.csv', index=False)
+df = sample_df.reset_index().rename(columns={"index": "id"})
+df = df[["id", "content"]]
+df.to_csv("dataset/test.csv", index=False)

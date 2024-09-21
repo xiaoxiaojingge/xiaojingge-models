@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-10 19:47
 @Author  : lijing
 @File    : sklearn_lsa_scipy.py
 @Description:
 ---------------------------------------
-'''
+"""
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import CountVectorizer
@@ -72,15 +72,19 @@ from sklearn.datasets import fetch_20newsgroups
 # 本地配置下载fetch_20newsgroups：https://blog.csdn.net/weixin_44278512/article/details/88702719
 # 修改 D:\workspace_coding\environment\anaconda3\envs\env_model_python_3_8_19\Lib\site-packages\sklearn\datasets\_twenty_newsgroups.py
 # 最终缓存文件位置：C:\Users\xiaojingge\scikit_learn_data\20news-bydate_py3.pkz
-categories = ['alt.atheism', 'talk.religion.misc', 'comp.graphics', 'sci.space']
-remove = ('headers', 'footers', 'quotes')
-newsgroups_train = fetch_20newsgroups(subset='train', categories=categories, remove=remove, download_if_missing=True)
-newsgroups_test = fetch_20newsgroups(subset='test', categories=categories, remove=remove, download_if_missing=True)
+categories = ["alt.atheism", "talk.religion.misc", "comp.graphics", "sci.space"]
+remove = ("headers", "footers", "quotes")
+newsgroups_train = fetch_20newsgroups(
+    subset="train", categories=categories, remove=remove, download_if_missing=True
+)
+newsgroups_test = fetch_20newsgroups(
+    subset="test", categories=categories, remove=remove, download_if_missing=True
+)
 
 print(newsgroups_train.data[:5])
 
 docs = newsgroups_train.data
-tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+tfidf_vectorizer = TfidfVectorizer(stop_words="english")
 X = tfidf_vectorizer.fit_transform(docs)
 
 # 使用 CountVectorizer 创建矩阵
@@ -132,7 +136,7 @@ print("\nResults from TruncatedSVD:")
 print("Components:\n", svd.components_)
 print("Explained variance ratio:\n", svd.explained_variance_ratio_)
 print("U:\n", np.dot(X_reduced, svd.components_))
-print("s:\n", np.sqrt(svd.explained_variance_ratio_ * np.sum(svd.singular_values_ ** 2)))
+print("s:\n", np.sqrt(svd.explained_variance_ratio_ * np.sum(svd.singular_values_**2)))
 print("s:\n", svd.singular_values_)
 print("Vh:\n", svd.components_)
 
@@ -140,6 +144,6 @@ print("Vh:\n", svd.components_)
 from sklearn import decomposition
 
 U, s, Vh = decomposition.randomized_svd(X, k)
-print(f'U：{U}')
-print(f's：{s}')
-print(f'Vh：{Vh}')
+print(f"U：{U}")
+print(f"s：{s}")
+print(f"Vh：{Vh}")

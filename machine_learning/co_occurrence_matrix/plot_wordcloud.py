@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-10 13:57
 @Author  : lijing
 @File    : plot_wordcloud.py
 @Description: 
 ---------------------------------------
-'''
+"""
 from os import path
 from PIL import Image
 from wordcloud import WordCloud
 import numpy as np
 
-stopwords_path = 'userdict/stopword.txt'
-stopwords = set(line.strip() for line in open(stopwords_path, encoding='utf-8'))
+stopwords_path = "userdict/stopword.txt"
+stopwords = set(line.strip() for line in open(stopwords_path, encoding="utf-8"))
 
 
 def generate_wordcloud(text):
-    '''
+    """
     输入文本生成词云,如果是中文文本需要先进行分词处理
-    '''
+    """
     # 设置显示方式
     # print(text)
     d = path.dirname(__file__)

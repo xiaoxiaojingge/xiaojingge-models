@@ -14,7 +14,7 @@
 
 from darts import TimeSeries
 from darts.models import AutoARIMA
-from darts.metrics import mape, rmse, mae
+from .metrics import mape, rmse, mae
 import pandas as pd
 import matplotlib.pyplot as plt
 

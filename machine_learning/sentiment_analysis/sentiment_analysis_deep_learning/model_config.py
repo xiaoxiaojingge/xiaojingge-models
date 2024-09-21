@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-12 16:42
 @Author  : lijing
 @File    : config.py
 @Description: 配置相关，里面的参数信息，根据实际的情况调整
 ---------------------------------------
-'''
+"""
 
 import torch
 
@@ -43,6 +43,6 @@ class Config:
         self.dropout = 0.5
         self.batch_size = 64
         self.lr = 1e-3
-        self.num_epochs = 10
+        self.num_epochs = 2
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.num_workers = 0  # 线程数，根据需要调整

@@ -160,7 +160,9 @@ if __name__ == "__main__":
     ma = q3 + 1.5 * iqr
 
     print("最大值：", ma, "最小值：", mi)
-    dataset = dataset.drop(index=dataset[((dataset.value > ma) | (dataset.value < mi)).index])
+    dataset = dataset.drop(
+        index=dataset[((dataset.value > ma) | (dataset.value < mi)).index]
+    )
 
     scaler = MinMaxScaler()
     dataset["OT"] = scaler.fit_transform(dataset["OT"].values.reshape(-1, 1))

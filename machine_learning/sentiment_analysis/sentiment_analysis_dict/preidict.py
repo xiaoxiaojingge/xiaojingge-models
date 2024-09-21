@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-11 10:05
 @Author  : lijing
 @File    : preidict.py
 @Description: 预测
 ---------------------------------------
-'''
+"""
 
-from machine_learning.sentiment_analysis.sentiment_analysis_dict.networks import SentimentAnalysis
+from machine_learning.sentiment_analysis.sentiment_analysis_dict.networks import (
+    SentimentAnalysis,
+)
 
 SA = SentimentAnalysis()
 
@@ -44,7 +46,12 @@ def predict(sent):
     return result
 
 
-if __name__ == '__main__':
-    sentences = ['对你不满意', '对你挺满意的，因为你是个大美女', '帅哥', '我妈说明儿不让出去玩']
+if __name__ == "__main__":
+    sentences = [
+        "对你不满意",
+        "对你挺满意的，因为你是个大美女",
+        "你可真是个大帅哥",
+        "我妈说明儿不让出去玩",
+    ]
     for text in sentences:
         print(predict(text))

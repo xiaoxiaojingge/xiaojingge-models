@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-16 21:17
 @Author  : lijing
 @File    : models.py
 @Description: 模型相关
 ---------------------------------------
-'''
+"""
 import torch
 import torch.nn as nn
 
@@ -20,7 +20,13 @@ class LSTM(nn.Module):
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.batch_size = batch_size
-        self.lstm = nn.LSTM(self.input_size, self.hidden_size, self.num_layers, batch_first=True, bidirectional=False)
+        self.lstm = nn.LSTM(
+            self.input_size,
+            self.hidden_size,
+            self.num_layers,
+            batch_first=True,
+            bidirectional=False,
+        )
 
     def forward(self, input_seq):
         batch_size, seq_len = input_seq.shape[0], input_seq.shape[1]
@@ -31,7 +37,9 @@ class LSTM(nn.Module):
 
 
 class LSTMMain(nn.Module):
-    def __init__(self, input_size, output_len, lstm_hidden, lstm_layers, batch_size, device="cpu"):
+    def __init__(
+        self, input_size, output_len, lstm_hidden, lstm_layers, batch_size, device="cpu"
+    ):
         super(LSTMMain, self).__init__()
         self.lstm_hidden = lstm_hidden
         self.lstm_layers = lstm_layers

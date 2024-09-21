@@ -50,6 +50,7 @@ from utils.redis_util import redis_util
 config = Config().get_project_config
 logger = Logger().get_logger
 
+
 def train_model_re(
     model_id: int,
     user_account: str,

@@ -495,9 +495,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
-                    e
-                ),
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(e),
             )
             logger.error(
                 "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(e)
@@ -520,6 +518,7 @@ class ModelServer:
             torch.cuda.empty_cache()
 
             import gc
+
             del self.model
             del self.train_dataloader
             del self.tokenizer
@@ -562,9 +561,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
-                    e
-                ),
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(e),
             )
             logger.error(
                 "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(e)
@@ -619,9 +616,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型训练过程中出现异常",
-                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(
-                    e
-                ),
+                "【gplinker_bert4torch】训练过程中出现异常，停止训练！ -> {}".format(e),
             )
             logger.error(
                 "实体关系抽取模型训练过程中出现异常，停止训练！ -> {}".format(e)
@@ -667,9 +662,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "实体关系抽取模型推理过程中出现异常",
-                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
-                    e
-                ),
+                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(e),
             )
             logger.error("实体关系抽取模型推理过程中出现异常！ -> {}".format(e))
             # 指定错误标志

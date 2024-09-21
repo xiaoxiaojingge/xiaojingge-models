@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-11 9:02
 @Author  : lijing
 @File    : hyper_parameters.py
 @Description: 超参数信息，这里定义了词典
 ---------------------------------------
-'''
+"""
 
 import os
-from machine_learning.sentiment_analysis.sentiment_analysis_dict.utils import ToolGeneral
+from machine_learning.sentiment_analysis.sentiment_analysis_dict.utils import (
+    ToolGeneral,
+)
 
 pwd = os.path.dirname(os.path.abspath(__file__))
 tool = ToolGeneral()
@@ -30,17 +32,20 @@ inverse_dict：反转副词词典，包含表示反转的副词。
 
 
 class Hyperparams:
-    '''Hyper parameters'''
+    """Hyper parameters"""
+
     # Load sentiment dictionary
-    deny_word = tool.load_dict(os.path.join(pwd, 'dict', 'not.txt'))
-    pos_dict = tool.load_dict(os.path.join(pwd, 'dict', 'positive.txt'))
-    neg_dict = tool.load_dict(os.path.join(pwd, 'dict', 'negative.txt'))
+    deny_word = tool.load_dict(os.path.join(pwd, "dict", "not.txt"))
+    pos_dict = tool.load_dict(os.path.join(pwd, "dict", "positive.txt"))
+    neg_dict = tool.load_dict(os.path.join(pwd, "dict", "negative.txt"))
     pos_neg_dict = pos_dict | neg_dict
     # Load adverb dictionary
-    most_dict = tool.load_dict(os.path.join(pwd, 'dict', 'most.txt'))
-    very_dict = tool.load_dict(os.path.join(pwd, 'dict', 'very.txt'))
-    more_dict = tool.load_dict(os.path.join(pwd, 'dict', 'more.txt'))
-    ish_dict = tool.load_dict(os.path.join(pwd, 'dict', 'ish.txt'))
-    insufficiently_dict = tool.load_dict(os.path.join(pwd, 'dict', 'insufficiently.txt'))
-    over_dict = tool.load_dict(os.path.join(pwd, 'dict', 'over.txt'))
-    inverse_dict = tool.load_dict(os.path.join(pwd, 'dict', 'inverse.txt'))
+    most_dict = tool.load_dict(os.path.join(pwd, "dict", "most.txt"))
+    very_dict = tool.load_dict(os.path.join(pwd, "dict", "very.txt"))
+    more_dict = tool.load_dict(os.path.join(pwd, "dict", "more.txt"))
+    ish_dict = tool.load_dict(os.path.join(pwd, "dict", "ish.txt"))
+    insufficiently_dict = tool.load_dict(
+        os.path.join(pwd, "dict", "insufficiently.txt")
+    )
+    over_dict = tool.load_dict(os.path.join(pwd, "dict", "over.txt"))
+    inverse_dict = tool.load_dict(os.path.join(pwd, "dict", "inverse.txt"))

@@ -417,9 +417,7 @@ class ModelServer:
         except Exception as e:
             self.email_server.send_email_2_admin(
                 "命名实体识别模型推理过程中出现异常",
-                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(
-                    e
-                ),
+                "【gplinker_bert4torch】推理过程中出现异常！ -> {}".format(e),
             )
             logger.error("命名实体识别模型推理过程中出现异常！ -> {}".format(e))
             # 指定错误标志

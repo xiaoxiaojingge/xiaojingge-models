@@ -80,6 +80,7 @@ def get_input(df, time_step, st, ed, dis_mean, dis_std):
 
     return X, Y
 
+
 class MyDataset(Dataset):
     def __init__(self, X, Y=None):
         self.X = X

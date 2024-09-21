@@ -11,7 +11,8 @@
 # pip install fast-pytorch-kmeans kmeans_pytorch text2vec
 
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 
 import torch
 import numpy as np

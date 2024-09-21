@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+"""
 ---------------------------------------
 @Time    : 2024-08-11 9:09
 @Author  : lijing
 @File    : networks.py
 @Description: 
 ---------------------------------------
-'''
+"""
 
 import os
 import sys
@@ -15,14 +15,22 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from machine_learning.sentiment_analysis.sentiment_analysis_dict.utils import ToolGeneral
-from machine_learning.sentiment_analysis.sentiment_analysis_dict.hyper_parameters import Hyperparams as hp
+from machine_learning.sentiment_analysis.sentiment_analysis_dict.utils import (
+    ToolGeneral,
+)
+from machine_learning.sentiment_analysis.sentiment_analysis_dict.hyper_parameters import (
+    Hyperparams as hp,
+)
 
 tool = ToolGeneral()
-jieba.load_userdict(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dict', 'jieba_sentiment.txt'))
+jieba.load_userdict(
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "dict", "jieba_sentiment.txt"
+    )
+)
 
 
-class SentimentAnalysis():
+class SentimentAnalysis:
     """
     进行情感分析
     """
@@ -55,11 +63,22 @@ class SentimentAnalysis():
             # 遍历每个词
             for i, word in enumerate(words):
                 # 初始化情感计数器
-                pos_count, neg_count, pos_count2, neg_count2, pos_count3, neg_count3 = 0, 0, 0, 0, 0, 0
+                pos_count, neg_count, pos_count2, neg_count2, pos_count3, neg_count3 = (
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                )
                 # 如果词在积极词典中
                 if word in hp.pos_dict:
                     # 处理特定的词组合
-                    if word in ['好', '真', '实在'] and words[min(i + 1, len(words) - 1)] in hp.pos_neg_dict and words[min(i + 1, len(words) - 1)] != word:
+                    if (
+                        word in ["好", "真", "实在"]
+                        and words[min(i + 1, len(words) - 1)] in hp.pos_neg_dict
+                        and words[min(i + 1, len(words) - 1)] != word
+                    ):
                         continue
                     else:
                         # 增加积极词计数
@@ -87,7 +106,7 @@ class SentimentAnalysis():
                                 pos_count *= 1
                         # 扫描情感词前的否定词数, 根据否定词数调整得分
                         # 如果否定词数量为奇数，情感得分乘以-1.0（情感反转）
-                        if tool.is_odd(c) == 'odd':
+                        if tool.is_odd(c) == "odd":
                             pos_count *= -1.0
                             pos_count2 += pos_count
                             pos_count3 += pos_count + pos_count2
@@ -99,7 +118,11 @@ class SentimentAnalysis():
                         a = i + 1
                 # 消极情感的分析，与上面一致
                 elif word in hp.neg_dict:
-                    if word in ['好', '真', '实在'] and words[min(i + 1, len(words) - 1)] in hp.pos_neg_dict and words[min(i + 1, len(words) - 1)] != word:
+                    if (
+                        word in ["好", "真", "实在"]
+                        and words[min(i + 1, len(words) - 1)] in hp.pos_neg_dict
+                        and words[min(i + 1, len(words) - 1)] != word
+                    ):
                         continue
                     else:
                         neg_count += 1
@@ -123,7 +146,7 @@ class SentimentAnalysis():
                             else:
                                 neg_count *= 1
                     # 如果否定词数量为奇数，情感得分乘以-1.0（情感反转）
-                    if tool.is_odd(d) == 'odd':
+                    if tool.is_odd(d) == "odd":
                         neg_count *= -1.0
                         neg_count2 += neg_count
                         neg_count3 += neg_count + neg_count2
@@ -140,12 +163,12 @@ class SentimentAnalysis():
             # 处理感叹号
             # 扫描感叹号前的情感词，发现后权值*2
             # 感叹号前的情感得分翻倍
-            if words and words[-1] in ['!', '！']:
+            if words and words[-1] in ["!", "！"]:
                 scores = [[j * 2 for j in c] for c in scores]
 
             # 处理转折词“但是”
             # 扫描但是后面的情感词，发现后权值*5
-            for w_im in ['但是', '但']:
+            for w_im in ["但是", "但"]:
                 if w_im in words:
                     ind = words.index(w_im)
                     ind = words.index(w_im)
@@ -155,7 +178,7 @@ class SentimentAnalysis():
                     scores = scores_head + scores_tail_new
                     break
             # 处理问号，将得分设置为负面
-            if words[-1] in ['?', '？']:  # 扫描是否有问好，发现后为负面
+            if words[-1] in ["?", "？"]:  # 扫描是否有问好，发现后为负面
                 scores = [[0, 2]]
             # 将句子得分添加到最终得分列表
             results.append(scores)
@@ -258,7 +281,7 @@ class SentimentAnalysis():
         return _score1, _score0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sa = SentimentAnalysis()
-    text = '我妈说明儿不让出去玩'
+    text = "我妈说明儿不让出去玩"
     print(sa.normalization_score(text))
